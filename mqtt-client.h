@@ -8,7 +8,7 @@
 
 #include <mosquitto.h>
 
+void mqtt_go_go(void);
+void mqtt_cleanup(void);
 
-struct mosquitto *mosq mqtt_setup(void);
-int mqtt_cleanup(struct mosquitto *mosq);
 

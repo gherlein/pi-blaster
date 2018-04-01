@@ -31,6 +31,10 @@
 static char VERSION[] = "SNAPSHOT";
 #endif
 
+/* modern glibc will complain about the above if it doesn't see this. */
+#define _DEFAULT_SOURCE
+
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>

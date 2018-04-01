@@ -15,5 +15,5 @@ install-sh
 Makefile
 Makefile.in
 missing
-pi-blaster
+pi-blaster-mqtt
 stamp-h1

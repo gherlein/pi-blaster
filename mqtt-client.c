@@ -3,22 +3,39 @@
 #define mqtt_host "localhost"
 #define mqtt_port 1883
 
-static int run = 1;
-
-FILE *fp;
-
 void handle_signal(int s);
 void connect_callback(struct mosquitto *mosq, void *obj, int result);
+void message_callback(struct mosquitto *mosq, void *obj,
+    const struct mosquitto_message *message);
 
+static struct mosquitto *mosq;
+static int run = 1;
 
-/* calling modeule needs to declare a mosq variable */
-//struct mosquitto *mosq;
+void connect_callback(struct mosquitto *mosq, void *obj, int result)
+{
+    printf("connect callback, rc=%d\n", result);
+}
 
+void message_callback(struct mosquitto *mosq, void *obj,
+    const struct mosquitto_message *message)
+{
+    bool match = 0;
 
-mqtt_setup(void)
+    printf("got message '%.*s' for topic '%s'\n", message->payloadlen,
+        (char *)message->payload, message->topic);
+
+    mosquitto_topic_matches_sub("test-rbot", message->topic, &match);
+    if (match)
+    {
+        printf("got message\n");
+    }
+
+}
+
+void mqtt_go_go(void)
 {
     char clientid[24];
-    struct mosquitto *mosq;
+    int rc = 0;
 
     signal(SIGINT, handle_signal);
     signal(SIGTERM, handle_signal);
@@ -39,10 +56,19 @@ mqtt_setup(void)
         mosquitto_subscribe(mosq, NULL, "pi-blaster-mqtt", 0);
     }
 
-    return mosq;
+    while (run)
+    {
+        rc = mosquitto_loop(mosq, -1, 1);
+        if (run && rc)
+        {
+            printf("connection error!\n");
+            sleep(10);
+            mosquitto_reconnect(mosq);
+        }
+    }
 }
 
-int mqtt_cleanup(struct mosquitto *mosq)
+void mqtt_cleanup(void)
 {
     mosquitto_destroy(mosq);
     mosquitto_lib_cleanup();
@@ -51,9 +77,4 @@ int mqtt_cleanup(struct mosquitto *mosq)
 void handle_signal(int s)
 {
     run = 0;
-}
-
-void connect_callback(struct mosquitto *mosq, void *obj, int result)
-{
-    printf("connect callback, rc=%d\n", result);
 }

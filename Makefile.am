@@ -9,7 +9,8 @@ CFLAGS = -Wall -pedantic -std=c99
 EXTRA_DIST = pi-blaster-mqtt.service
 
 sbin_PROGRAMS = pi-blaster-mqtt
-pi_blaster_SOURCES = pi-blaster-mqtt.c mailbox.c mqtt-client.c
+pi_blaster_mqtt_SOURCES = pi-blaster-mqtt.c mailbox.c mqtt-client.c
+pi_blaster_mqtt_LDADD = -lmosquitto
 
 if !DEBIAN_PKG
 if HAVE_SYSTEMD
