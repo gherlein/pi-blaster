@@ -1,5 +1,5 @@
 /*
- * pi-blaster.c Multiple PWM for the Raspberry Pi
+ * pi-blaster-mqtt.c Multiple PWM for the Raspberry Pi
 
  * Copyright (c) 2018 Greg Herlein <gherlein@herlein.com>
  * Based on the most excellent pi-blaster.c by Thomas Sarlandie
@@ -1135,8 +1135,9 @@ main(int argc, char **argv)
 	}
 	printf("Reading %s.\n", DEVFILE);
 
-	go_go_go();
-
+	//go_go_go();
+  mqtt_go_go();
+  
 	return 0;
 }
 
