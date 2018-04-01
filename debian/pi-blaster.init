@@ -1,6 +1,6 @@
 #! /bin/sh
 ### BEGIN INIT INFO
-# Provides:          pi-blaster
+# Provides:          pi-blaster-mqtt
 # Required-Start:    $remote_fs $syslog
 # Required-Stop:     $remote_fs $syslog
 # Default-Start:     2 3 4 5
@@ -16,7 +16,7 @@
 
 PATH=/sbin:/usr/sbin:/bin:/usr/bin
 DESC="Daemon for PWM control of the Raspberry Pi GPIO pins"
-NAME=pi-blaster
+NAME=pi-blaster-mqtt
 DAEMON=/usr/sbin/$NAME
 DAEMON_ARGS=""
 SCRIPTNAME=/etc/init.d/$NAME

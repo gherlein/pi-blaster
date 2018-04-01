@@ -1,4 +1,6 @@
 #include "mqtt-client.h"
+#include "pi-blaster-mqtt.h"
+
 
 #define mqtt_host "localhost"
 #define mqtt_port 1883
@@ -19,11 +21,18 @@ void connect_callback(struct mosquitto *mosq, void *obj, int result)
 void message_callback(struct mosquitto *mosq, void *obj,
     const struct mosquitto_message *message)
 {
-//    bool match = 0;
+    bool match = 0;
 
     printf("got message '%.*s' for topic '%s'\n", message->payloadlen,
         (char *)message->payload, message->topic);
 
+    mosquitto_topic_matches_sub("pi-blaster-mqtt", message->topic, &match);
+    if (match)
+    {
+      process_msg((char *)message->payload);
+    }
+
+    
 
 }
 
