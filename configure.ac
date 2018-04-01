@@ -3,7 +3,7 @@
 
 AC_PREREQ([2.69])
 AC_INIT([pi-blaster], [0.1.2])
-AC_CONFIG_SRCDIR([pi-blaster.c])
+AC_CONFIG_SRCDIR([pi-blaster-mqtt.c])
 AC_CONFIG_HEADERS([config.h])
 AM_INIT_AUTOMAKE
 
