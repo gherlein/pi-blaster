@@ -44,6 +44,7 @@ AC_PROG_INSTALL
 AC_PROG_MAKE_SET
 
 # Check for libraries.
+AC_SEARCH_LIBS([mosquitto_new], [mosquitto_subscribe])
 
 # Check for header files.
 AC_CHECK_HEADERS([fcntl.h stdint.h stdlib.h string.h sys/ioctl.h sys/time.h unistd.h])

@@ -1,5 +1,8 @@
 /*
  * pi-blaster.c Multiple PWM for the Raspberry Pi
+
+ * Copyright (c) 2018 Greg Herlein <gherlein@herlein.com>
+ * Based on the most excellent pi-blaster.c by Thomas Sarlandie
  * Copyright (c) 2013 Thomas Sarlandie <thomas@sarlandie.net>
  *
  * Based on the most excellent servod.c by Richard Hirst
@@ -44,6 +47,9 @@ static char VERSION[] = "SNAPSHOT";
 #include <fcntl.h>
 #include <sys/mman.h>
 #include "mailbox.h"
+
+#include <mqtt-client.h>
+
 
 // MAX_CHANNELS is both the highest gpio we can address
 // and the maximum number of channels
