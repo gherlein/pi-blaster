@@ -1,6 +1,9 @@
-pi-blaster
-==========
+#pi-blaster-mqtt
 
+WORK IN PROGRESS - DO NOT USE YET - UNSTABLE AND NOT WORKING
+
+
+------
 This project enables PWM on the GPIO pins you request of a Raspberry Pi. The
 technique used is extremely efficient: does not use the CPU and gives very
 stable pulses.
