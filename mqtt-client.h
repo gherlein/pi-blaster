@@ -8,6 +8,11 @@
 
 #include <mosquitto.h>
 
+
+#define MQTT_TOPIC_TEXT "pi-blaster-mqtt/text"
+#define MQTT_TOPIC_BIN  "pi-blaster-mqtt/bin"
+
+
 void mqtt_go_go(void);
 void mqtt_cleanup(void);
 

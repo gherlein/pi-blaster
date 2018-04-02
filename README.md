@@ -1,16 +1,19 @@
-#pi-blaster-mqtt
+# pi-blaster-mqtt
 
-WORK IN PROGRESS - DO NOT USE YET - UNSTABLE AND NOT WORKING
+## WORK IN PROGRESS - DO NOT USE YET - UNSTABLE AND NOT WORKING
 
+## Background
 
-------
+Based on the most excellent [pi-blaster](https://github.com/sarfata/pi-blaster) by Thomas Sarlandie.
+
 This project enables PWM on the GPIO pins you request of a Raspberry Pi. The
 technique used is extremely efficient: does not use the CPU and gives very
 stable pulses.
 
+Rather than expose a local device that is opened and written to in order to control the pins, this project implements an MQTT client built into the code that pulls messages from an MQTT broker.  By default, it assumes the broker is running on the local RPi.
+
 Pi-blaster project is based on the excellent work of Richard Hirst for
 [ServoBlaster](https://github.com/richardghirst/PiBits).
-
 
 ## How to install
 
@@ -51,6 +54,10 @@ systems this can be achieved with:
 
     sudo apt-get install autoconf
 
+You will need to install the MQTT libraries:
+
+    sudo apt-get install -y libmosquitto-dev libmosquitto1-dbg mosquitto-clients mosquitto-dev mosquitto
+
 Building is extremely simple:
 
     ./autogen.sh
@@ -90,16 +97,12 @@ docker run -it --privileged --rm -v /dev:/dev pib
 
 ## How to use
 
-pi-blaster creates a special file (FIFO) in `/dev/pi-blaster`. Any application
-on your Raspberry Pi can write to it (this means that only pi-blaster needs to
-be root, your application can run as a normal user).
+<need to add instructions on how to test with the command line client>
+<need some code examples too>
 
 **Important: when using pi-blaster, the GPIO pins you send to it are configured
 as output.**
 
-To set the value of a PIN, you write a command to `/dev/pi-blaster` in the form
-`<GPIOPinName>=<value>` where `<value>` must be a number between 0 and 1
-(included).
 
 You must use the GPIO number (BCM xx in the diagram below).
 
@@ -108,33 +111,6 @@ You must use the GPIO number (BCM xx in the diagram below).
 
 Examples:
 
-  * To completely turn on GPIO pin 17:
-
-    echo "17=1" > /dev/pi-blaster
-
-  * To set GPIO pin 17 to a PWM of 20%
-
-    echo "17=0.2" > /dev/pi-blaster
-
-  * To turn off GPIO pin 17:
-
-    echo "17=0" > /dev/pi-blaster
-
-  * To release a pin so it can be used as digital GPIO or an input:
-
-    echo "release 17" > /dev/pi-blaster
-
-  * To set all configured GPIO pins at once to a PWM of 20%:
-
-    echo "*=0.2" > /dev/pi-blaster
-
-  * To set several GPIO pins at once to various PWM values:
-
-    echo "13=1 17=0.2 19=0" > /dev/pi-blaster
-
-    You can also use different delimiters (comma, semicolon):
-
-    echo "13=1; 17=0.2; 19=0" > /dev/pi-blaster
 
 ### NodeJS Library
 
@@ -245,11 +221,11 @@ see and to make a pull-requests.
 
 Released under The MIT License.
 
-Note: This project was initially released by Richard Hist under the GPL v3
+Note from Thomas Sarlandie: This project was initially released by Richard Hist under the GPL v3
 License. Richard gave me explicit permission to distribute this derivative work
 under the MIT License.
 
-    Copyright (c) 2013 Thomas Sarlandie - Richard Hirst
+    Copyright (c) 2018 Greg Herlein - Thomas Sarlandie - Richard Hirst
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
     of this software and associated documentation files (the "Software"), to
@@ -269,5 +245,5 @@ under the MIT License.
     FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
     IN THE SOFTWARE.
 
-[blog]:
-http://www.tbideas.com/blog/2013/02/controling-a-high-power-rgb-led-with-a-raspberry-pi/
+[Thomas Sarlandie's Blog] (http://www.tbideas.com/blog/2013/02/controling-a-high-power-rgb-led-with-a-raspberry-pi/)
+

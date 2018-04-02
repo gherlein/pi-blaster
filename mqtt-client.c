@@ -57,7 +57,8 @@ void mqtt_go_go(void)
 
         rc = mosquitto_connect(mosq, mqtt_host, mqtt_port, 60);
 
-        mosquitto_subscribe(mosq, NULL, "pi-blaster-mqtt", 0);
+        mosquitto_subscribe(mosq, NULL, MQTT_TOPIC_TEXT, 0);
+        mosquitto_subscribe(mosq, NULL, MQTT_TOPIC_BIN, 0);
     }
 
     while (run)
