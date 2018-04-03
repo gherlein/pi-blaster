@@ -5,6 +5,8 @@
 #define mqtt_host "localhost"
 #define mqtt_port 1883
 
+
+
 void handle_signal(int s);
 void connect_callback(struct mosquitto *mosq, void *obj, int result);
 void message_callback(struct mosquitto *mosq, void *obj,
