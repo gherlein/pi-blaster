@@ -1,5 +1,5 @@
 [Unit]
-Description=Daemon for PWM control of the Raspberry Pi GPIO pins
+Description=pi-blaster-mqtt - PWM controller
 
 [Service]
 EnvironmentFile=-/etc/default/pi-blaster-mqtt

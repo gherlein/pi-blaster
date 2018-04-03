@@ -106,7 +106,7 @@ uint8_t num_channels = (sizeof(known_pins) / sizeof(known_pins[0]));
 static uint8_t pin2gpio[MAX_CHANNELS];
 
 #ifdef NOT_USING_MQTT
-  #define DEVFILE			"/dev/pi-blaster"
+#define DEVFILE			"/dev/pi-blaster"
 #endif
 #define DEVFILE_MBOX    "/dev/pi-blaster-mbox"
 #define DEVFILE_VCIO	"/dev/vcio"
@@ -698,6 +698,7 @@ static void update_pwm()
         // 
         // 
         // 
+        // 
         // PWM.
         if (channel_pwm[i] > 0 && pin2gpio[i])
         {
@@ -823,6 +824,7 @@ static void init_hardware(void)
                                                         // 
         // 
         // 
+        // 
         // giving 1MHz
         udelay(100);
         clk_reg[PWMCLK_CNTL] = 0x5A000016;      // Source=PLLD and enable
@@ -845,6 +847,7 @@ static void init_hardware(void)
         udelay(100);
         clk_reg[PCMCLK_DIV] = 0x5A000000 | (500 << 12); // Set pcm div to 500, 
                                                         // 
+        // 
         // 
         // 
         // giving 1MHz
@@ -969,8 +972,8 @@ void process_msg(char *msg)
     int servo;
     float value;
 
-    fprintf(stderr, "message: [%s]\n", msg);
-    
+    syslog(LOG_INFO,"msg: [%s]\n", msg);
+
     if (!strcmp(msg, "debug_regs\n"))
     {
         debug_dump_hw();
@@ -985,23 +988,23 @@ void process_msg(char *msg)
     }
     else if (sscanf(msg, "*=%f", &value) == 1)
     {
-      set_all_pwm(value);
+        set_all_pwm(value);
     }
     else if (sscanf(msg, "%d=%f", &servo, &value))
     {
-      if (servo < 0)
-      {
-        fprintf(stderr, "Invalid channel number %d\n", servo);
-      }
-      else if (value < 0 || value > 1)
-      {
-        fprintf(stderr, "Invalid value %f\n", value);
-      }
-      else
-      {
-        set_pin(servo, value);
-      }
-      update_pwm();
+        if (servo < 0)
+        {
+            fprintf(stderr, "Invalid channel number %d\n", servo);
+        }
+        else if (value < 0 || value > 1)
+        {
+            fprintf(stderr, "Invalid value %f\n", value);
+        }
+        else
+        {
+            set_pin(servo, value);
+        }
+        update_pwm();
     }
 }
 
@@ -1106,9 +1109,6 @@ static void go_go_go(void)
     }
 }
 #endif
-
-
-
 
 void parseargs(int argc, char **argv)
 {
@@ -1242,9 +1242,12 @@ int main(int argc, char **argv)
     mbox.handle = mbox_open();
     if (mbox.handle < 0)
         fatal("Failed to open mailbox\n");
-    unsigned mbox_board_rev = get_board_revision(mbox.handle);
 
+    openlog("pi-blaster-mqtt", LOG_PID | LOG_NDELAY | LOG_CONS, LOG_USER);
+
+    unsigned mbox_board_rev = get_board_revision(mbox.handle);
     printf("MBox Board Revision: %#x\n", mbox_board_rev);
+
     get_model(mbox_board_rev);
     unsigned mbox_dma_channels = get_dma_channels(mbox.handle);
 
@@ -1306,22 +1309,26 @@ int main(int argc, char **argv)
 #ifdef NOT_USING_MQTT
     unlink(DEVFILE);
     if (mkfifo(DEVFILE, 0666) < 0)
-      fatal("pi-blaster: Failed to create %s: %m\n", DEVFILE);
+        fatal("pi-blaster: Failed to create %s: %m\n", DEVFILE);
     if (chmod(DEVFILE, 0666) < 0)
-      fatal("pi-blaster: Failed to set permissions on %s: %m\n", DEVFILE);
-#endif    
+        fatal("pi-blaster: Failed to set permissions on %s: %m\n", DEVFILE);
+#endif
     printf("Initialised, ");
-    if (daemonize) {
-      if (daemon(0,1) < 0)
-        fatal("pi-blaster: Failed to daemonize process: %m\n");
-      else      printf("Daemonized, ");
+    if (daemonize)
+    {
+        if (daemon(0, 1) < 0)
+            fatal("pi-blaster: Failed to daemonize process: %m\n");
+        else
+            printf("Daemonized, ");
     }
 #ifdef NOT_USING_MQTT
     printf("Reading %s.\n", DEVFILE);
     go_go_go();
-#else    
+#else
     mqtt_go_go();
 #endif
-    
+
+    closelog();
+
     return 0;
 }

@@ -17,7 +17,7 @@ static int run = 1;
 
 void connect_callback(struct mosquitto *mosq, void *obj, int result)
 {
-    printf("connect callback, rc=%d\n", result);
+  syslog(LOG_INFO,"connected to message borker, rc=%d\n", result);
 }
 
 void message_callback(struct mosquitto *mosq, void *obj,
@@ -25,7 +25,7 @@ void message_callback(struct mosquitto *mosq, void *obj,
 {
     bool match = 0;
 
-    printf("got message '%.*s' for topic '%s'\n", message->payloadlen,
+    syslog(LOG_INFO,"message '%.*s' for topic '%s'\n", message->payloadlen,
         (char *)message->payload, message->topic);
 
     mosquitto_topic_matches_sub(MQTT_TOPIC_TEXT, message->topic, &match);
@@ -68,9 +68,9 @@ void mqtt_go_go(void)
         rc = mosquitto_loop(mosq, -1, 1);
         if (run && rc)
         {
-            printf("connection error!\n");
-            sleep(10);
-            mosquitto_reconnect(mosq);
+          syslog(LOG_ERR,"connection error!\n");
+          sleep(10);
+          mosquitto_reconnect(mosq);
         }
     }
 }
