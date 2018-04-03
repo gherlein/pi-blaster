@@ -28,7 +28,7 @@ void message_callback(struct mosquitto *mosq, void *obj,
     printf("got message '%.*s' for topic '%s'\n", message->payloadlen,
         (char *)message->payload, message->topic);
 
-    mosquitto_topic_matches_sub("pi-blaster-mqtt", message->topic, &match);
+    mosquitto_topic_matches_sub(MQTT_TOPIC_TEXT, message->topic, &match);
     if (match)
     {
       process_msg((char *)message->payload);
@@ -60,7 +60,7 @@ void mqtt_go_go(void)
         rc = mosquitto_connect(mosq, mqtt_host, mqtt_port, 60);
 
         mosquitto_subscribe(mosq, NULL, MQTT_TOPIC_TEXT, 0);
-        mosquitto_subscribe(mosq, NULL, MQTT_TOPIC_BIN, 0);
+        mosquitto_subscribe(mosq, NULL, MQTT_TOPIC_LINE, 0);
     }
 
     while (run)

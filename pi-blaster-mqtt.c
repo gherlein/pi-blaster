@@ -105,7 +105,9 @@ uint8_t num_channels = (sizeof(known_pins) / sizeof(known_pins[0]));
 // inputs as PWM, they are set on the fly by the pin param passed.
 static uint8_t pin2gpio[MAX_CHANNELS];
 
-#define DEVFILE			"/dev/pi-blaster"
+#ifdef NOT_USING_MQTT
+  #define DEVFILE			"/dev/pi-blaster"
+#endif
 #define DEVFILE_MBOX    "/dev/pi-blaster-mbox"
 #define DEVFILE_VCIO	"/dev/vcio"
 
@@ -371,8 +373,10 @@ static void terminate(int dummy)
         mem_free(mbox.handle, mbox.mem_ref);
         mbox_close(mbox.handle);
     }
+#ifdef NOT_USING_MQTT
     dprintf("Unlink %s...\n", DEVFILE);
     unlink(DEVFILE);
+#endif
     dprintf("Unlink %s...\n", DEVFILE_MBOX);
     unlink(DEVFILE_MBOX);
     printf("pi-blaster stopped.\n");
@@ -1299,22 +1303,25 @@ int main(int argc, char **argv)
     // Only calls update_pwm after ctrl_data calculates the pin mask
     // to unlock all pins on start.
     init_pwm();
+#ifdef NOT_USING_MQTT
     unlink(DEVFILE);
     if (mkfifo(DEVFILE, 0666) < 0)
       fatal("pi-blaster: Failed to create %s: %m\n", DEVFILE);
     if (chmod(DEVFILE, 0666) < 0)
       fatal("pi-blaster: Failed to set permissions on %s: %m\n", DEVFILE);
-    
+#endif    
     printf("Initialised, ");
     if (daemonize) {
       if (daemon(0,1) < 0)
         fatal("pi-blaster: Failed to daemonize process: %m\n");
       else      printf("Daemonized, ");
     }
+#ifdef NOT_USING_MQTT
     printf("Reading %s.\n", DEVFILE);
-    
-    // go_go_go();
+    go_go_go();
+#else    
     mqtt_go_go();
-
+#endif
+    
     return 0;
 }

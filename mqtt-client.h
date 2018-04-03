@@ -10,7 +10,7 @@
 
 
 #define MQTT_TOPIC_TEXT "pi-blaster-mqtt/text"
-#define MQTT_TOPIC_BIN  "pi-blaster-mqtt/bin"
+#define MQTT_TOPIC_LINE "pi-blaster-mqtt/line"
 
 
 void mqtt_go_go(void);
