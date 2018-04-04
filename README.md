@@ -1,25 +1,16 @@
 # pi-blaster-mqtt
 
-This Raspberry Pi (RPi) service subscribes to an MQTT broker and processes commands to set GPIO pins to PWM values.  It's based on the excellent pi-blaster software that uses a local device file approach for control.  Like pi-blaster, this software provides PWM control with low CPU impact on the RPi.
+This Raspberry Pi (RPi) service subscribes to an MQTT broker running on the RPi and processes commands to set GPIO pins to PWM values.  It's based on the excellent pi-blaster software that uses a local device file approach for control.  Like pi-blaster, this software provides PWM control with low CPU impact on the RPi.
 
 ## How to install
 
+### Install Prerequisites
 
-### Build your own deb package and install with dpkg
+You need to have an MQTT broker installed on the RPi:
 
-The Debian package relies on systemd which means you must have Raspbian 8 or
-later (aka "Jessie"). Run `cat /etc/debian_version`) to check what version
-you are currently running.
-
-Install the debian tools required to compile and prepare the package:
-
-    sudo apt-get install debhelper dh-autoreconf dh-systemd dpkg-dev \
-      init-system-helpers autoconf
-
-And build the package:
-
-    dpkg-buildpackage -us -uc -i && sudo dpkg -i ../pi-blaster*.deb
-
+```
+sudo apt install -y mosquitto
+```
 
 ### Build and install directly from source
 
@@ -55,6 +46,22 @@ And to uninstall, simply run:
 
 This will stop pi-blaster and prevent it from starting automatically on the next
 reboot.
+
+### Build your own deb package and install with dpkg
+
+The Debian package relies on systemd which means you must have Raspbian 8 or
+later (aka "Jessie"). Run `cat /etc/debian_version`) to check what version
+you are currently running.
+
+Install the debian tools required to compile and prepare the package:
+
+    sudo apt-get install debhelper dh-autoreconf dh-systemd dpkg-dev \
+      init-system-helpers autoconf
+
+And build the package:
+
+    dpkg-buildpackage -us -uc -i && sudo dpkg -i ../pi-blaster*.deb
+
 
 ### Install with docker
 
@@ -111,6 +118,10 @@ For example, from the RPi, to set pin 4 to a typically neutral value (150ms, or 
 ```
 mosquitto_pub -h localhost -t pi-blaster-mqtt/line -m "4=0.15|17=0.15|27=0.15"
 ```
+
+## TODO
+
+By default 
 
 
 
@@ -242,5 +253,4 @@ under the MIT License.
     FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
     IN THE SOFTWARE.
 
-[Thomas Sarlandie's Blog] (http://www.tbideas.com/blog/2013/02/controling-a-high-power-rgb-led-with-a-raspberry-pi/)
 
