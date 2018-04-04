@@ -1,32 +1,9 @@
 # pi-blaster-mqtt
 
-## WORK IN PROGRESS - DO NOT USE YET - UNSTABLE AND NOT WORKING
-
-## Background
-
-Based on the most excellent [pi-blaster](https://github.com/sarfata/pi-blaster) by Thomas Sarlandie.
-
-This project enables PWM on the GPIO pins you request of a Raspberry Pi. The
-technique used is extremely efficient: does not use the CPU and gives very
-stable pulses.
-
-Rather than expose a local device that is opened and written to in order to control the pins, this project implements an MQTT client built into the code that pulls messages from an MQTT broker.  By default, it assumes the broker is running on the local RPi.
-
-Pi-blaster project is based on the excellent work of Richard Hirst for
-[ServoBlaster](https://github.com/richardghirst/PiBits).
+This Raspberry Pi (RPi) service subscribes to an MQTT broker and processes commands to set GPIO pins to PWM values.  It's based on the excellent pi-blaster software that uses a local device file approach for control.  Like pi-blaster, this software provides PWM control with low CPU impact on the RPi.
 
 ## How to install
 
-### Arch Linux
-
-Thanks to [Patrick Wozniak](https://github.com/patlux), you can easily install pi-blaster
-on archlinux with:
-
-    yaourt -S pi-blaster-git
-
-And activate the systemd-service with:
-
-    sudo systemctl enable pi-blaster
 
 ### Build your own deb package and install with dpkg
 
@@ -84,7 +61,7 @@ reboot.
 If you have docker on your RPi, you can run this image
 
 ```bash
-docker run -it --privileged --rm -v /dev:/dev sarfata/pi-blaster
+docker run -it --privileged --rm -v /dev:/dev sarfata/pi-blaster-mqtt
 ```
 
 Or build from source in git repo
@@ -97,31 +74,45 @@ docker run -it --privileged --rm -v /dev:/dev pib
 
 ## How to use
 
-<need to add instructions on how to test with the command line client>
-<need some code examples too>
-
-**Important: when using pi-blaster, the GPIO pins you send to it are configured
-as output.**
-
+### GPIO Pin Numbers
 
 You must use the GPIO number (BCM xx in the diagram below).
 
 [![List of pins thanks to pinout.xyz](pinout.xyz.png)](http://pinout.xyz)
 
+### Controlling One Pin at a Time
 
-Examples:
+From the RPi or from a host on the same network, you can use the Mosquitto CLI to test:
+
+```
+mosquitto_pub -h <host> -t pi-blaster-mqtt/text -m "<pin>=<value>"
+```
+For example, from the RPi, to set pin 4 to a typically neutral value (150ms, or 0.15 seconds) use this command:
+
+```
+mosquitto_pub -h localhost -t pi-blaster-mqtt/text -m "4=0.15"
+```
+
+Likewise to set pin 4 to a typically max value (200ms, or 0.20 seconds) use this command:
+
+```
+mosquitto_pub -h localhost -t pi-blaster-mqtt/text -m "4=0.20"
+```
+
+### Controlling Multiple Pins at a Time
+
+From the RPi or from a host on the same network, you can use the Mosquitto CLI to test:
+
+```
+mosquitto_pub -h <host> -t pi-blaster-mqtt/line -m "<pin>=<value>|<pin>=<value>|<pin>=<value>"
+```
+For example, from the RPi, to set pin 4 to a typically neutral value (150ms, or 0.15 seconds) use this command:
+
+```
+mosquitto_pub -h localhost -t pi-blaster-mqtt/line -m "4=0.15|17=0.15|27=0.15"
+```
 
 
-### NodeJS Library
-
-NodeJS users can use [pi-blaster.js](https://github.com/sarfata/pi-blaster.js).
-
-### C#
-
-A C# example was contributed by [Vili
-Volcini](https://plus.google.com/109312219443477679717/posts). It is available
-on [this stackoverflow
-thread](http://stackoverflow.com/questions/17241071/writing-to-fifo-file-linux-monoc).
 
 ## How to adjust the frequency and the resolution of the PWM
 
@@ -192,12 +183,11 @@ experimental support for a PCM time-source. If you are interested, I suggest you
 look at Richard Hirst original project (ServoBlaster) and try the `--pcm`
 option.
 
-## A practical example: high-power RGB lighting
+## Contributors to pi-blaster-mqtt
 
-This library was developed for TBideas high power LED driver. You can read more
-about this project on [our blog][blog].
+* Greg Herlein (https://github.com/gherlein)
 
-## Contributors
+## Contributors to pi-blaster
 
 * Richard Hirst for [ServoBlaster](https://github.com/richardghirst/PiBits)
 * Thomas Sarlandie (https://github.com/sarfata)
@@ -216,6 +206,13 @@ about this project on [our blog][blog].
 
 The best way to contribute is to write code for the features you would like to
 see and to make a pull-requests.
+
+## History 
+
+Based on the most excellent [pi-blaster](https://github.com/sarfata/pi-blaster) by Thomas Sarlandie.
+
+Pi-blaster project is based on the excellent work of Richard Hirst for
+[ServoBlaster](https://github.com/richardghirst/PiBits).
 
 ## License
 
