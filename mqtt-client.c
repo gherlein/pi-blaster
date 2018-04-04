@@ -1,11 +1,16 @@
+/* 
+ * mqtt-client.c 
+
+ * Copyright (c) 2018 Greg Herlein <gherlein@herlein.com>
+ * Released under the MIT License:  https://gherlein.mit-license.org/
+ * Mosquitto library is licensed EPL:  https://github.com/eclipse/mosquitto
+ */
+
 #include "mqtt-client.h"
 #include "pi-blaster-mqtt.h"
 
-
 #define mqtt_host "localhost"
 #define mqtt_port 1883
-
-
 
 void handle_signal(int s);
 void connect_callback(struct mosquitto *mosq, void *obj, int result);
@@ -17,7 +22,7 @@ static int run = 1;
 
 void connect_callback(struct mosquitto *mosq, void *obj, int result)
 {
-  syslog(LOG_INFO,"connected to message borker, rc=%d\n", result);
+    syslog(LOG_INFO, "connected to message borker, rc=%d\n", result);
 }
 
 void message_callback(struct mosquitto *mosq, void *obj,
@@ -25,16 +30,23 @@ void message_callback(struct mosquitto *mosq, void *obj,
 {
     bool match = 0;
 
-    syslog(LOG_INFO,"message '%.*s' for topic '%s'\n", message->payloadlen,
+    syslog(LOG_INFO, "message '%.*s' for topic '%s'\n", message->payloadlen,
         (char *)message->payload, message->topic);
 
+    mosquitto_topic_matches_sub(MQTT_TOPIC_LINE, message->topic, &match);
+    if (match)
+    {
+        process_line((char *)message->payload);
+        return;
+    }
+
+    match = 0;
     mosquitto_topic_matches_sub(MQTT_TOPIC_TEXT, message->topic, &match);
     if (match)
     {
-      process_msg((char *)message->payload);
+        process_text((char *)message->payload);
+        return;
     }
-
-    
 
 }
 
@@ -59,8 +71,8 @@ void mqtt_go_go(void)
 
         rc = mosquitto_connect(mosq, mqtt_host, mqtt_port, 60);
 
-        mosquitto_subscribe(mosq, NULL, MQTT_TOPIC_TEXT, 0);
         mosquitto_subscribe(mosq, NULL, MQTT_TOPIC_LINE, 0);
+        mosquitto_subscribe(mosq, NULL, MQTT_TOPIC_TEXT, 0);
     }
 
     while (run)
@@ -68,9 +80,9 @@ void mqtt_go_go(void)
         rc = mosquitto_loop(mosq, -1, 1);
         if (run && rc)
         {
-          syslog(LOG_ERR,"connection error!\n");
-          sleep(10);
-          mosquitto_reconnect(mosq);
+            syslog(LOG_ERR, "connection error!\n");
+            sleep(10);
+            mosquitto_reconnect(mosq);
         }
     }
 }

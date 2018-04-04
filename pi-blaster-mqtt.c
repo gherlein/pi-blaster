@@ -967,13 +967,13 @@ static void init_channel_pwm(void)
         channel_pwm[i] = 0;
 }
 
-void process_msg(char *msg)
+void process_text(char *msg)
 {
     int servo;
     float value;
 
-    syslog(LOG_INFO,"msg: [%s]\n", msg);
-
+    syslog(LOG_INFO,"msg: [%s]\n",msg);
+    
     if (!strcmp(msg, "debug_regs\n"))
     {
         debug_dump_hw();
@@ -1007,6 +1007,22 @@ void process_msg(char *msg)
         update_pwm();
     }
 }
+
+
+void process_line(char *msg)
+{
+    char *token;
+    const char s[2] = MQTT_LINE_SPLIT;
+    
+    token = strtok(msg,s);
+    while( token != NULL ) {
+
+      process_text(token);
+      token = strtok(NULL,s);
+    }
+}
+
+
 
 #ifdef NOT_USING_MQTT
 static void go_go_go(void)

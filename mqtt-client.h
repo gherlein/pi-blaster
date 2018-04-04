@@ -11,6 +11,7 @@
 
 #define MQTT_TOPIC_TEXT "pi-blaster-mqtt/text"
 #define MQTT_TOPIC_LINE "pi-blaster-mqtt/line"
+#define MQTT_LINE_SPLIT "|"
 
 
 void mqtt_go_go(void);
