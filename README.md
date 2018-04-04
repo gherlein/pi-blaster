@@ -119,12 +119,6 @@ For example, from the RPi, to set pin 4 to a typically neutral value (150ms, or 
 mosquitto_pub -h localhost -t pi-blaster-mqtt/line -m "4=0.15|17=0.15|27=0.15"
 ```
 
-## TODO
-
-By default 
-
-
-
 ## How to adjust the frequency and the resolution of the PWM
 
 On startup, pi-blaster gives you the frequency of the PWM, the number of steps
@@ -182,6 +176,11 @@ To view help or version information, use:
     --help
 
     --version
+
+## TODO
+
+By default this software connects to the Mosquitto broker running on the RPi. I plan to support running that broker on another host and allow a command line parameter (see above) to specify that hostname/IP address.  This is not yet a high priority.
+
 
 ## Warnings and other caveats
 
