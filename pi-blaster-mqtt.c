@@ -972,7 +972,9 @@ void process_text(char *msg)
     int servo;
     float value;
 
-    syslog(LOG_INFO,"msg: [%s]\n",msg);
+    if(msg==NULL) return;
+    
+//    syslog(LOG_INFO,"msg: [%s]\n",msg);
     
     if (!strcmp(msg, "debug_regs\n"))
     {
@@ -1013,6 +1015,8 @@ void process_line(char *msg)
 {
     char *token;
     const char s[2] = MQTT_LINE_SPLIT;
+
+    if(msg==NULL) return;
     
     token = strtok(msg,s);
     while( token != NULL ) {

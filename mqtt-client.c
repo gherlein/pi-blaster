@@ -30,8 +30,8 @@ void message_callback(struct mosquitto *mosq, void *obj,
 {
     bool match = 0;
 
-    syslog(LOG_INFO, "message '%.*s' for topic '%s'\n", message->payloadlen,
-        (char *)message->payload, message->topic);
+//    syslog(LOG_INFO, "message '%.*s' for topic '%s'\n", message->payloadlen,
+//        (char *)message->payload, message->topic);
 
     mosquitto_topic_matches_sub(MQTT_TOPIC_LINE, message->topic, &match);
     if (match)

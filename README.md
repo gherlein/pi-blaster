@@ -32,19 +32,19 @@ Building is extremely simple:
     ./configure
     make
 
-To start pi-blaster and have it relaunched automatically on every reboot:
+To start pi-blaster-mqtt and have it relaunched automatically on every reboot:
 
     sudo make install
 
 Or to start pi-blaster manually run:
 
-    sudo ./pi-blaster
+    sudo ./pi-blaster-mqtt
 
 And to uninstall, simply run:
 
     sudo make uninstall
 
-This will stop pi-blaster and prevent it from starting automatically on the next
+This will stop pi-blaster-mqtt and prevent it from starting automatically on the next
 reboot.
 
 ### Build your own deb package and install with dpkg
@@ -121,10 +121,10 @@ mosquitto_pub -h localhost -t pi-blaster-mqtt/line -m "4=0.15|17=0.15|27=0.15"
 
 ## How to adjust the frequency and the resolution of the PWM
 
-On startup, pi-blaster gives you the frequency of the PWM, the number of steps
+On startup, pi-blaster-mqtt gives you the frequency of the PWM, the number of steps
 that you can control, the maximum and the minimum period of a pulse.
 
-    sudo ./pi-blaster
+    sudo ./pi-blaster-mqtt
     Using hardware:               PWM
     Number of channels:           8
     PWM frequency:                100 Hz
@@ -167,7 +167,7 @@ To invert the pulse (off = pin HIGH, pulse = pin LOW), use:
 This can be useful for common anode LEDs or other devices that expect an
 active-low signal.
 
-To keep pi-blaster running in the foreground without running as a daemon use:
+To keep pi-blaster-mqtt running in the foreground without running as a daemon use:
 
     -D
 
@@ -180,6 +180,17 @@ To view help or version information, use:
 ## TODO
 
 By default this software connects to the Mosquitto broker running on the RPi. I plan to support running that broker on another host and allow a command line parameter (see above) to specify that hostname/IP address.  This is not yet a high priority.
+
+
+## Working with Git
+
+If you want to totally clean up the folder to get ready to do a 'git push" here's the easiest way to do it:
+
+```
+make distclean
+git clean -xf
+rm -Rf autom4te.cache/
+```
 
 
 ## Warnings and other caveats
