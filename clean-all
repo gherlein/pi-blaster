@@ -1,0 +1,3 @@
+make distclean
+git clean -xf
+rm -Rf autom4te.cache/

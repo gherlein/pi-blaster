@@ -10,3 +10,4 @@ Type=forking
 
 [Install]
 WantedBy=multi-user.target
+After=network.target network-online.target
