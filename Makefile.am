@@ -21,10 +21,14 @@ if !CROSS_COMPILING
 install-data-hook:
 	systemctl enable pi-blaster-mqtt
 	systemctl start pi-blaster-mqtt
+	sudo systemctl daemon-reload
+	sudo systemctl enable pi-blaster-mqtt.service
 
 uninstall-hook:
 	systemctl stop pi-blaster-mqtt
 	systemctl disable pi-blaster-mqtt
+	sudo systemctl daemon-reload
+	sudo systemctl disable pi-blaster-mqtt.service
 endif # !CROSS_COMPILING
 
 else
