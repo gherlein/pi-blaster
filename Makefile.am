@@ -29,16 +29,16 @@ endif # !CROSS_COMPILING
 
 else
 init_ddir = $(sysconfdir)/init.d
-init_d_SCRIPTS = pi-blaster-mqtt.boot.sh
+init_d_SCRIPTS = pi-blaster-mqtt.boot
 
 # Unless we are cross-compiling, start now.
 if !CROSS_COMPILING
 install-data-hook:
-	update-rc.d pi-blaster-mqtt.boot.sh defaults
-	$(init_ddir)/pi-blaster-mqtt.boot.sh start
+	update-rc.d pi-blaster-mqtt.boot defaults
+	$(init_ddir)/pi-blaster-mqtt.boot start
 
 uninstall-hook:
-	update-rc.d pi-blaster-mqtt.boot.sh remove
+	update-rc.d pi-blaster-mqtt.boot remove
 	killall pi-blaster-mqtt
 endif # !CROSS_COMPILING
 
