@@ -108,6 +108,7 @@ static uint8_t pin2gpio[MAX_CHANNELS];
 #ifdef NOT_USING_MQTT
 #define DEVFILE			"/dev/pi-blaster"
 #endif
+
 #define DEVFILE_MBOX    "/dev/pi-blaster-mbox"
 #define DEVFILE_VCIO	"/dev/vcio"
 

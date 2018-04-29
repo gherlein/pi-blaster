@@ -81,8 +81,11 @@ void mqtt_go_go(void)
         if (run && rc)
         {
             syslog(LOG_ERR, "connection error!\n");
-            sleep(10);
+            sleep(1);
+            syslog(LOG_ERR, "attempting reconnect...\n");
             mosquitto_reconnect(mosq);
+            mosquitto_subscribe(mosq, NULL, MQTT_TOPIC_LINE, 0);
+            mosquitto_subscribe(mosq, NULL, MQTT_TOPIC_TEXT, 0);
         }
     }
 }
